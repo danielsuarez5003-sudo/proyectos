@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pac-Man</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:#fff;font-family:Arial,sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center}
+#app{width:min(94vw,620px);text-align:center}
+h1{color:#ffd400;margin:8px 0;font-size:42px}
+#hud{display:flex;justify-content:space-between;background:#111;border:2px solid #333;border-radius:10px;padding:10px;margin-bottom:8px;font-weight:bold}
+canvas{display:block;width:100%;height:auto;background:#000;border:3px solid #204cff;border-radius:8px}
+#msg{height:28px;margin:8px;color:#ddd}
+button{border:0;border-radius:9px;background:#ffd400;font-weight:bold;padding:10px 18px;cursor:pointer}
+.pad{display:grid;grid-template-columns:55px 55px 55px;gap:6px;justify-content:center;margin-top:10px}
+.pad button{font-size:22px;padding:8px}
+.up{grid-column:2}.left{grid-column:1}.down{grid-column:2}.right{grid-column:3}
+@media(min-width:700px){.pad{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+<h1>PAC-MAN</h1>
+<div id="hud">
+<span>PUNTOS: <b id="score">0</b></span>
+<span>VIDAS: <b id="lives">3</b></span>
+<span>NIVEL: <b id="level">1</b></span>
+</div>
+<canvas id="game" width="560" height="504"></canvas>
+<div id="msg">Usa ↑ ↓ ← → o WASD para moverte · P para pausar</div>
+<button onclick="newGame()">REINICIAR</button>
+<div class="pad">
+<button class="up" onclick="changeDirection(0,-1)">▲</button>
+<button class="left" onclick="changeDirection(-1,0)">◀</button>
+<button class="down" onclick="changeDirection(0,1)">▼</button>
+<button class="right" onclick="changeDirection(1,0)">▶</button>
+</div>
+</div>
+
+<script>
+const canvas=document.getElementById("game"),ctx=canvas.getContext("2d");
+const TILE=28;
+const RAW=[
+"####################",
+"#..................#",
+"#.####.######.####.#",
+"#o####.######.####o#",
+"#..................#",
+"#.####.##    ##.####",
+"#......#      #.....#",
+"######.# ## ##.######",
+"     #.#      #.#     ",
+"######.# ## ##.#.######",
+"#............#.......#",
+"#.####.#####.#######.#",
+"#o....#...##...#....o#",
+"####.#.# ## #.#.######",
+"#......#    #......#",
+"#.####.######.####.#",
+"#..................#",
+"####################"
+];
+// Normalize each row to exactly 20 cells.
+const MAP=RAW.map(r=>{
+  if(r.length<20) return r.padEnd(20," ");
+  return r.slice(0,20);
+});
+const W=20,H=18;
+
+let walls=new Set(), pellets=new Set(), powers=new Set();
+function buildBoard(){
+ walls.clear();pellets.clear();powers.clear();
+ for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+   const c=MAP[y][x]||" ";
+   if(c==="#")walls.add(`${x},${y}`);
+   else if(c==="."||c==="o"){pellets.add(`${x},${y}`);if(c==="o")powers.add(`${x},${y}`);}
+ }
+}
+function blocked(x,y){
+ if(x<0||x>=W||y<0||y>=H)return false; // horizontal tunnel
+ return walls.has(`${x},${y}`);
+}
+function valid(x,y){
+ if(y<0||y>=H)return false;
+ if(x<0||x>=W)return true;
+ return !walls.has(`${x},${y}`);
+}
+function wrapX(x){return (x+W)%W}
+
+let score,lives,level,paused,over,frightened;
+let pac,ghosts,lastTime=0,acc=0;
+const STEP=145;
+
+function resetPositions(){
+ pac={x:10,y:16,dx:0,dy:0,nextX:0,nextY:0};
+ ghosts=[
+  {x:9,y:8,dx:1,dy:0,color:"#ff3030"},
+  {x:10,y:8,dx:-1,dy:0,color:"#ff8fce"},
+  {x:9,y:9,dx:-1,dy:0,color:"#00e5ff"},
+  {x:10,y:9,dx:1,dy:0,color:"#ff9d00"}
+ ];
+}
+function newGame(){
+ score=0;lives=3;level=1;paused=false;over=false;frightened=0;
+ buildBoard();resetPositions();updateHud();
+}
+function changeDirection(dx,dy){
+ pac.nextX=dx;pac.nextY=dy;
+ // Make the first key press responsive.
+ if(valid(pac.x+dx,pac.y+dy)){pac.dx=dx;pac.dy=dy;}
+}
+document.addEventListener("keydown",e=>{
+ const k=e.key.toLowerCase();
+ if(["arrowup","arrowdown","arrowleft","arrowright"," ","w","a","s","d"].includes(k))e.preventDefault();
+ if(k==="arrowup"||k==="w")changeDirection(0,-1);
+ else if(k==="arrowdown"||k==="s")changeDirection(0,1);
+ else if(k==="arrowleft"||k==="a")changeDirection(-1,0);
+ else if(k==="arrowright"||k==="d")changeDirection(1,0);
+ else if(k==="p"&&!over)paused=!paused;
+ else if(k==="enter"&&over)newGame();
+});
+
+function movePac(){
+ if(valid(pac.x+pac.nextX,pac.y+pac.nextY)){pac.dx=pac.nextX;pac.dy=pac.nextY;}
+ if(valid(pac.x+pac.dx,pac.y+pac.dy)){
+   pac.x+=pac.dx;pac.y+=pac.dy;
+   if(pac.x<0)pac.x=W-1;
+   if(pac.x>=W)pac.x=0;
+ }
+ const key=`${pac.x},${pac.y}`;
+ if(pellets.delete(key))score+=10;
+ if(powers.delete(key)){score+=50;frightened=55;}
+ if(pellets.size===0){
+   level++;
+   buildBoard();
+   resetPositions();
+   frightened=0;
+ }
+}
+
+function moveGhost(g){
+ let dirs=[[1,0],[-1,0],[0,1],[0,-1]].filter(d=>valid(g.x+d[0],g.y+d[1]));
+ if(!dirs.length)return;
+
+ // Don't instantly reverse unless necessary.
+ let choices=dirs.filter(d=>!(d[0]===-g.dx&&d[1]===-g.dy));
+ if(!choices.length)choices=dirs;
+
+ if(frightened>0){
+   choices.sort(()=>Math.random()-.5);
+ }else{
+   choices.sort((a,b)=>{
+     const da=Math.abs((g.x+a[0])-pac.x)+Math.abs((g.y+a[1])-pac.y);
+     const db=Math.abs((g.x+b[0])-pac.x)+Math.abs((g.y+b[1])-pac.y);
+     return da-db;
+   });
+   if(Math.random()<0.25)choices.sort(()=>Math.random()-.5);
+ }
+ const d=choices[0];g.dx=d[0];g.dy=d[1];
+ g.x+=d[0];g.y+=d[1];
+ if(g.x<0)g.x=W-1;if(g.x>=W)g.x=0;
+}
+function checkCollision(){
+ for(const g of ghosts){
+  if(g.x===pac.x&&g.y===pac.y){
+   if(frightened>0){
+    score+=200;g.x=9;g.y=8;g.dx=1;g.dy=0;
+   }else{
+    lives--;updateHud();
+    if(lives<=0){over=true;document.getElementById("msg").textContent="GAME OVER · pulsa ENTER o REINICIAR";}
+    else{resetPositions();}
+    return;
+   }
+  }
+ }
+}
+function updateHud(){
+ document.getElementById("score").textContent=score;
+ document.getElementById("lives").textContent=lives;
+ document.getElementById("level").textContent=level;
+}
+
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle="#000";ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ // Maze
+ for(const k of walls){
+  const [x,y]=k.split(",").map(Number);
+  ctx.strokeStyle="#174cff";ctx.lineWidth=3;
+  ctx.strokeRect(x*TILE+2,y*TILE+2,TILE-4,TILE-4);
+ }
+ // Pellets
+ ctx.fillStyle="#fff";
+ for(const k of pellets){
+  const [x,y]=k.split(",").map(Number);
+  ctx.beginPath();ctx.arc(x*TILE+14,y*TILE+14,2.7,0,Math.PI*2);ctx.fill();
+ }
+ for(const k of powers){
+  const [x,y]=k.split(",").map(Number);
+  ctx.beginPath();ctx.arc(x*TILE+14,y*TILE+14,7,0,Math.PI*2);ctx.fill();
+ }
+
+ // Pac-Man
+ const cx=pac.x*TILE+14,cy=pac.y*TILE+14;
+ let angle=0;
+ if(pac.dx===-1)angle=Math.PI;
+ else if(pac.dx===0&&pac.dy===1)angle=Math.PI/2;
+ else if(pac.dx===0&&pac.dy===-1)angle=-Math.PI/2;
+ const mouth=.22+.13*Math.abs(Math.sin(Date.now()/90));
+ ctx.fillStyle="#ffd400";ctx.beginPath();ctx.moveTo(cx,cy);
+ ctx.arc(cx,cy,11,angle+mouth,angle+Math.PI*2-mouth);ctx.closePath();ctx.fill();
+
+ // Ghosts
+ ghosts.forEach(g=>{
+  const x=g.x*TILE+14,y=g.y*TILE+14,r=11;
+  ctx.fillStyle=frightened>0?"#315cff":g.color;
+  ctx.beginPath();ctx.arc(x,y-1,r,Math.PI,0);ctx.lineTo(x+r,y+10);
+  ctx.lineTo(x+5,y+7);ctx.lineTo(x,y+10);ctx.lineTo(x-5,y+7);ctx.lineTo(x-r,y+10);
+  ctx.closePath();ctx.fill();
+  ctx.fillStyle="#fff";
+  ctx.beginPath();ctx.arc(x-4,y-3,3.5,0,Math.PI*2);ctx.arc(x+4,y-3,3.5,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle="#111";
+  ctx.beginPath();ctx.arc(x-4+g.dx,y-3+g.dy,1.5,0,Math.PI*2);ctx.arc(x+4+g.dx,y-3+g.dy,1.5,0,Math.PI*2);ctx.fill();
+ });
+
+ if(paused||over){
+  ctx.fillStyle="rgba(0,0,0,.72)";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.textAlign="center";ctx.fillStyle="#ffd400";ctx.font="bold 38px Arial";
+  ctx.fillText(over?"GAME OVER":"PAUSA",canvas.width/2,canvas.height/2);
+  ctx.fillStyle="#fff";ctx.font="18px Arial";
+  ctx.fillText(over?"ENTER para volver a jugar":"P para continuar",canvas.width/2,canvas.height/2+35);
+ }
+}
+
+function loop(t){
+ if(!lastTime)lastTime=t;
+ acc+=t-lastTime;lastTime=t;
+ while(acc>=STEP){
+  if(!paused&&!over){
+   movePac();
+   moveGhostsCounter++;
+   if(moveGhostsCounter%1===0)ghosts.forEach(moveGhost);
+   if(frightened>0)frightened--;
+   checkCollision();updateHud();
+  }
+  acc-=STEP;
+ }
+ draw();requestAnimationFrame(loop);
+}
+let moveGhostsCounter=0;
+newGame();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
