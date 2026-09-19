@@ -1,0 +1,2801 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ViatiMex - Viaja por México</title>
+
+<style>
+
+:root{
+--primary:#0f766e;
+--primary-dark:#115e59;
+--secondary:#14b8a6;
+--light:#f0fdfa;
+--dark:#12302d;
+--gray:#64748b;
+--border:#dbe5e4;
+--shadow:0 8px 25px rgba(15,118,110,.12);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:#f6faf9;
+color:#1f2937;
+line-height:1.5;
+}
+
+header{
+background:linear-gradient(135deg,#0f766e,#0d9488);
+color:white;
+position:sticky;
+top:0;
+z-index:1000;
+box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+
+.navbar{
+max-width:1200px;
+margin:auto;
+padding:16px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:20px;
+}
+
+.logo{
+font-size:28px;
+font-weight:800;
+}
+
+.logo span{
+color:#ccfbf1;
+}
+
+nav{
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+padding:9px 14px;
+border-radius:20px;
+font-size:14px;
+}
+
+nav a:hover{
+background:rgba(255,255,255,.16);
+}
+
+.hero{
+background:
+linear-gradient(
+rgba(15,118,110,.86),
+rgba(13,148,136,.80)
+);
+color:white;
+text-align:center;
+padding:70px 20px;
+}
+
+.hero h1{
+font-size:48px;
+margin-bottom:12px;
+}
+
+.hero p{
+font-size:19px;
+max-width:700px;
+margin:auto;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:40px 20px;
+}
+
+.section{
+margin-bottom:55px;
+}
+
+.section-title{
+text-align:center;
+margin-bottom:28px;
+}
+
+.section-title h2{
+color:var(--dark);
+font-size:32px;
+}
+
+.section-title p{
+color:var(--gray);
+margin-top:7px;
+}
+
+.card{
+background:white;
+border:1px solid var(--border);
+border-radius:18px;
+padding:22px;
+box-shadow:var(--shadow);
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
+
+.form-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:18px;
+}
+
+.form-group{
+display:flex;
+flex-direction:column;
+gap:7px;
+}
+
+label{
+font-weight:700;
+color:#334155;
+}
+
+input,
+select{
+width:100%;
+padding:13px 14px;
+border:1px solid #cbd5e1;
+border-radius:10px;
+font-size:16px;
+background:white;
+color:#1f2937;
+outline:none;
+}
+
+input:focus,
+select:focus{
+border-color:var(--secondary);
+box-shadow:0 0 0 3px rgba(20,184,166,.13);
+}
+
+button{
+border:0;
+cursor:pointer;
+border-radius:10px;
+padding:13px 18px;
+font-size:15px;
+font-weight:700;
+transition:.2s;
+}
+
+.btn-primary{
+background:var(--primary);
+color:white;
+}
+
+.btn-primary:hover{
+background:var(--primary-dark);
+}
+
+.btn-secondary{
+background:#e6fffb;
+color:#0f766e;
+}
+
+.btn-secondary:hover{
+background:#ccfbf1;
+}
+
+.hotel-image,
+.restaurant-image{
+height:170px;
+border-radius:12px;
+background:linear-gradient(135deg,#ccfbf1,#99f6e4);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:60px;
+margin-bottom:15px;
+}
+
+.hotel-card h3,
+.restaurant-card h3{
+color:var(--dark);
+margin-bottom:6px;
+}
+
+.price{
+font-size:20px;
+color:var(--primary);
+font-weight:800;
+}
+
+.muted{
+color:var(--gray);
+font-size:14px;
+}
+
+.btn-google{
+background:#f8fafc;
+border:1px solid #cbd5e1;
+color:#334155;
+width:100%;
+margin-top:10px;
+}
+
+.tabs{
+display:flex;
+justify-content:center;
+gap:8px;
+margin:22px 0;
+flex-wrap:wrap;
+}
+
+.tab{
+background:white;
+border:1px solid var(--border);
+color:var(--gray);
+}
+
+.tab.active{
+background:var(--primary);
+color:white;
+}
+
+.food-content{
+display:none;
+}
+
+.food-content.active{
+display:block;
+}
+
+.route-box{
+background:linear-gradient(135deg,#ecfeff,#f0fdfa);
+border:1px solid #99f6e4;
+border-radius:18px;
+padding:24px;
+}
+
+.route-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:15px;
+flex-wrap:wrap;
+margin-bottom:20px;
+}
+
+.route-header h3{
+color:var(--dark);
+font-size:23px;
+}
+
+.status{
+padding:8px 12px;
+border-radius:20px;
+background:#ccfbf1;
+color:#115e59;
+font-size:13px;
+font-weight:700;
+}
+
+.location-box{
+background:white;
+border-radius:15px;
+padding:20px;
+border:1px solid var(--border);
+margin-bottom:20px;
+}
+
+.location-title{
+font-size:18px;
+font-weight:800;
+color:var(--primary);
+margin-bottom:15px;
+}
+
+.location-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.route-actions{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:20px;
+}
+
+.results{
+display:none;
+margin-top:28px;
+}
+
+.results.show{
+display:block;
+}
+
+.metrics{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+margin-bottom:22px;
+}
+
+.metric{
+background:white;
+border:1px solid var(--border);
+padding:18px;
+border-radius:15px;
+text-align:center;
+}
+
+.metric .icon{
+font-size:25px;
+}
+
+.metric strong{
+display:block;
+font-size:24px;
+color:var(--primary);
+margin-top:4px;
+}
+
+.metric span{
+color:var(--gray);
+font-size:13px;
+}
+
+.cost-table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+.cost-table td{
+padding:12px 8px;
+border-bottom:1px solid #e2e8f0;
+}
+
+.cost-table td:last-child{
+text-align:right;
+font-weight:bold;
+}
+
+.total-box{
+background:#0f766e;
+color:white;
+border-radius:15px;
+padding:22px;
+margin-top:20px;
+}
+
+.total-row{
+display:flex;
+justify-content:space-between;
+padding:8px 0;
+}
+
+.total-final{
+border-top:1px solid rgba(255,255,255,.35);
+margin-top:8px;
+padding-top:15px;
+font-size:25px;
+font-weight:800;
+}
+
+.toll-list{
+margin-top:15px;
+}
+
+.toll-item{
+display:flex;
+justify-content:space-between;
+gap:15px;
+align-items:center;
+padding:13px 0;
+border-bottom:1px solid #e2e8f0;
+}
+
+.info{
+padding:14px;
+border-radius:10px;
+background:#eff6ff;
+color:#1e40af;
+margin-top:15px;
+font-size:14px;
+}
+
+.warning{
+padding:14px;
+border-radius:10px;
+background:#fff7ed;
+color:#9a3412;
+margin-top:15px;
+font-size:14px;
+}
+
+.empty{
+text-align:center;
+padding:30px;
+color:var(--gray);
+}
+
+footer{
+background:#12302d;
+color:white;
+padding:35px 20px;
+text-align:center;
+}
+
+footer p{
+color:#cbd5e1;
+margin-top:7px;
+}
+
+@media(max-width:900px){
+
+.grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.metrics{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+@media(max-width:650px){
+
+.navbar{
+flex-direction:column;
+}
+
+nav{
+justify-content:center;
+}
+
+.hero h1{
+font-size:36px;
+}
+
+.form-grid,
+.location-grid{
+grid-template-columns:1fr;
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.metrics{
+grid-template-columns:1fr 1fr;
+}
+
+.container{
+padding:30px 14px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- =====================================================
+HEADER
+===================================================== -->
+
+<header>
+
+<div class="navbar">
+
+<div class="logo">
+Viati<span>Mex</span> 🇲🇽
+</div>
+
+<nav>
+<a href="#inicio">Inicio</a>
+<a href="#hospedajes">Hospedajes</a>
+<a href="#alimentos">Alimentos</a>
+<a href="#viaticos">Viáticos</a>
+</nav>
+
+</div>
+
+</header>
+
+
+<!-- =====================================================
+HERO
+===================================================== -->
+
+<section class="hero" id="inicio">
+
+<h1>
+Viaja por México con ViatiMex 🇲🇽
+</h1>
+
+<p>
+Planea tu viaje, encuentra hospedaje,
+comida y calcula tus gastos de carretera.
+</p>
+
+</section>
+
+
+<main class="container">
+
+
+<!-- =====================================================
+HOSPEDAJES
+===================================================== -->
+
+<section class="section" id="hospedajes">
+
+<div class="section-title">
+
+<h2>🏨 Hospedajes</h2>
+
+<p>
+Busca opciones de alojamiento por estado,
+ciudad y presupuesto.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+Estado
+</label>
+
+<select id="hotelState">
+
+<option value="">
+Selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Ciudad
+</label>
+
+<select id="hotelCity">
+
+<option value="">
+Primero selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Presupuesto máximo por noche
+</label>
+
+<input
+type="number"
+id="budget"
+value="1000"
+min="100"
+step="50"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<button
+class="btn-primary"
+onclick="searchHotels()"
+>
+Buscar hospedajes
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+id="hotelResults"
+class="grid"
+style="margin-top:22px;"
+></div>
+
+</section>
+
+
+<!-- =====================================================
+ALIMENTOS
+===================================================== -->
+
+<section class="section" id="alimentos">
+
+<div class="section-title">
+
+<h2>🍽️ Alimentos</h2>
+
+<p>
+Encuentra opciones para desayuno,
+comida y cena.
+</p>
+
+</div>
+
+
+<div class="card">
+
+<div class="form-grid">
+
+<div class="form-group">
+
+<label>
+Estado
+</label>
+
+<select id="foodState">
+
+<option value="">
+Selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Ciudad
+</label>
+
+<select id="foodCity">
+
+<option value="">
+Selecciona una ciudad
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="tabs">
+
+<button
+class="tab active"
+onclick="showFood('desayuno',this)"
+>
+☕ Desayuno
+</button>
+
+<button
+class="tab"
+onclick="showFood('comida',this)"
+>
+🍴 Comida
+</button>
+
+<button
+class="tab"
+onclick="showFood('cena',this)"
+>
+🌙 Cena
+</button>
+
+</div>
+
+
+<div
+id="desayuno"
+class="food-content active"
+></div>
+
+<div
+id="comida"
+class="food-content"
+></div>
+
+<div
+id="cena"
+class="food-content"
+></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+VIÁTICOS
+===================================================== -->
+
+<section class="section" id="viaticos">
+
+<div class="section-title">
+
+<h2>🚗 Viáticos de carretera</h2>
+
+<p>
+Calcula el costo estimado de tu viaje.
+</p>
+
+</div>
+
+
+<div class="route-box">
+
+
+<div class="route-header">
+
+<div>
+
+<h3>
+🛣️ Calculadora de viáticos
+</h3>
+
+<p class="muted">
+Selecciona origen, destino y vehículo.
+</p>
+
+</div>
+
+<div class="status">
+SICT / MAPPIR
+</div>
+
+</div>
+
+
+<!-- ORIGEN -->
+
+<div class="location-box">
+
+<div class="location-title">
+📍 Lugar de origen
+</div>
+
+
+<div class="location-grid">
+
+<div class="form-group">
+
+<label>
+Estado de origen
+</label>
+
+<select id="originState">
+
+<option value="">
+Selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Ciudad de origen
+</label>
+
+<select id="originCity">
+
+<option value="">
+Primero selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- DESTINO -->
+
+<div class="location-box">
+
+<div class="location-title">
+🏁 Lugar de destino
+</div>
+
+
+<div class="location-grid">
+
+<div class="form-group">
+
+<label>
+Estado de destino
+</label>
+
+<select id="destinationState">
+
+<option value="">
+Selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+Ciudad de destino
+</label>
+
+<select id="destinationCity">
+
+<option value="">
+Primero selecciona un estado
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- VEHÍCULO -->
+
+<div class="form-grid">
+
+
+<div class="form-group">
+
+<label>
+🚘 Vehículo
+</label>
+
+<select id="vehicle">
+
+<option value="auto">
+Automóvil
+</option>
+
+<option value="suv">
+SUV / Camioneta
+</option>
+
+<option value="diesel">
+Vehículo Diesel
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+⛽ Combustible
+</label>
+
+<select id="fuel">
+
+<option value="regular">
+Gasolina Regular
+</option>
+
+<option value="premium">
+Gasolina Premium
+</option>
+
+<option value="diesel">
+Diesel
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+💵 Precio combustible ($/L)
+</label>
+
+<input
+type="number"
+id="fuelPrice"
+value="23.68"
+min="1"
+step="0.01"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+📊 Rendimiento (km/L)
+</label>
+
+<input
+type="number"
+id="performance"
+value="14"
+min="1"
+step="0.1"
+>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+🔄 Tipo de viaje
+</label>
+
+<select id="trip">
+
+<option value="one">
+Solo ida
+</option>
+
+<option value="round">
+Ida y vuelta
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>
+🛣️ Tipo de ruta
+</label>
+
+<select id="routeType">
+
+<option value="suggested">
+Ruta sugerida
+</option>
+
+<option value="economic">
+Ruta económica
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<!-- BOTONES -->
+
+<div class="route-actions">
+
+<button
+class="btn-primary"
+onclick="calculateTrip()"
+>
+💰 Calcular viáticos
+</button>
+
+
+<button
+class="btn-secondary"
+onclick="openSICT()"
+>
+🛣️ Consultar SICT
+</button>
+
+
+<button
+class="btn-secondary"
+onclick="openGoogleMaps()"
+>
+🗺️ Ver ruta
+</button>
+
+</div>
+
+
+<div class="info">
+
+<strong>
+El total de viáticos se calcula como:
+</strong>
+
+<br>
+
+⛽ Combustible + 🚧 Casetas = 💰 Total del viaje
+
+</div>
+
+
+<div class="warning">
+
+⚠️ Las tarifas de casetas pueden cambiar.
+Verifica la tarifa vigente antes de viajar.
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+RESULTADOS
+===================================================== -->
+
+<div
+id="results"
+class="results"
+>
+
+
+<div class="metrics">
+
+
+<div class="metric">
+
+<div class="icon">
+📏
+</div>
+
+<strong id="resultKm">
+0 km
+</strong>
+
+<span>
+Distancia
+</span>
+
+</div>
+
+
+<div class="metric">
+
+<div class="icon">
+⛽
+</div>
+
+<strong id="resultFuel">
+$0
+</strong>
+
+<span>
+Combustible
+</span>
+
+</div>
+
+
+<div class="metric">
+
+<div class="icon">
+🚧
+</div>
+
+<strong id="resultTolls">
+$0
+</strong>
+
+<span>
+Casetas
+</span>
+
+</div>
+
+
+<div class="metric">
+
+<div class="icon">
+💰
+</div>
+
+<strong id="resultTotal">
+$0
+</strong>
+
+<span>
+Total
+</span>
+
+</div>
+
+
+</div>
+
+
+<!-- RESUMEN -->
+
+<div class="card">
+
+<h3>
+📋 Resumen del viaje
+</h3>
+
+<div
+id="routeSummary"
+style="margin-top:15px;"
+></div>
+
+</div>
+
+
+<!-- DESGLOSE -->
+
+<div
+class="card"
+style="margin-top:20px;"
+>
+
+<h3>
+💵 Desglose de viáticos
+</h3>
+
+
+<table class="cost-table">
+
+<tr>
+
+<td>
+⛽ Combustible
+</td>
+
+<td id="breakFuel">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+🚧 Casetas
+</td>
+
+<td id="breakTolls">
+$0
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+💰 Total
+</td>
+
+<td id="breakTotal">
+$0
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+
+<!-- CASETAS -->
+
+<div
+class="card"
+style="margin-top:20px;"
+>
+
+<h3>
+🚧 Casetas consideradas
+</h3>
+
+
+<div
+id="tollList"
+class="toll-list"
+></div>
+
+
+<button
+class="btn-secondary"
+style="margin-top:15px;"
+onclick="openSICT()"
+>
+🔎 Verificar tarifas oficiales
+</button>
+
+</div>
+
+
+<!-- TOTAL -->
+
+<div class="total-box">
+
+<div class="total-row">
+
+<span>
+⛽ Combustible
+</span>
+
+<strong id="totalFuel">
+$0
+</strong>
+
+</div>
+
+
+<div class="total-row">
+
+<span>
+🚧 Casetas
+</span>
+
+<strong id="totalTolls">
+$0
+</strong>
+
+</div>
+
+
+<div class="total-row total-final">
+
+<span>
+💰 TOTAL DE VIÁTICOS
+</span>
+
+<strong id="grandTotal">
+$0
+</strong>
+
+</div>
+
+</div>
+
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+<strong>
+ViatiMex 🇲🇽
+</strong>
+
+<p>
+Tu compañero para viajar por México.
+</p>
+
+<p>
+Planea · Viaja · Calcula
+</p>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+ESTADOS Y CIUDADES
+===================================================== */
+
+const mexico={
+
+"Aguascalientes":[
+"Aguascalientes",
+"Calvillo",
+"Jesús María"
+],
+
+"Baja California":[
+"Mexicali",
+"Tijuana",
+"Ensenada",
+"Rosarito",
+"Tecate"
+],
+
+"Baja California Sur":[
+"La Paz",
+"Cabo San Lucas",
+"San José del Cabo",
+"Loreto"
+],
+
+"Campeche":[
+"Campeche",
+"Ciudad del Carmen",
+"Champotón"
+],
+
+"Chiapas":[
+"Tuxtla Gutiérrez",
+"San Cristóbal de las Casas",
+"Tapachula",
+"Comitán",
+"Palenque"
+],
+
+"Chihuahua":[
+"Chihuahua",
+"Ciudad Juárez",
+"Delicias",
+"Cuauhtémoc",
+"Parral"
+],
+
+"Ciudad de México":[
+"Ciudad de México"
+],
+
+"Coahuila":[
+"Saltillo",
+"Monclova",
+"Torreón",
+"Piedras Negras",
+"Ciudad Acuña"
+],
+
+"Colima":[
+"Colima",
+"Manzanillo",
+"Tecomán"
+],
+
+"Durango":[
+"Durango",
+"Gómez Palacio",
+"Lerdo"
+],
+
+"Estado de México":[
+"Toluca",
+"Ecatepec",
+"Texcoco",
+"Valle de Bravo"
+],
+
+"Guanajuato":[
+"Guanajuato",
+"León",
+"Celaya",
+"Irapuato",
+"San Miguel de Allende"
+],
+
+"Guerrero":[
+"Acapulco",
+"Chilpancingo",
+"Iguala",
+"Taxco",
+"Zihuatanejo"
+],
+
+"Hidalgo":[
+"Pachuca",
+"Tulancingo",
+"Tula"
+],
+
+"Jalisco":[
+"Guadalajara",
+"Puerto Vallarta",
+"Tepatitlán",
+"Lagos de Moreno",
+"Ciudad Guzmán",
+"Tequila",
+"Chapala"
+],
+
+"Michoacán":[
+"Morelia",
+"Uruapan",
+"Zamora",
+"Lázaro Cárdenas",
+"Pátzcuaro"
+],
+
+"Morelos":[
+"Cuernavaca",
+"Cuautla",
+"Tepoztlán"
+],
+
+"Nayarit":[
+"Tepic",
+"Bahía de Banderas",
+"San Blas",
+"Compostela"
+],
+
+"Nuevo León":[
+"Monterrey",
+"Apodaca",
+"San Nicolás de los Garza",
+"Linares"
+],
+
+"Oaxaca":[
+"Oaxaca de Juárez",
+"Salina Cruz",
+"Huatulco",
+"Puerto Escondido"
+],
+
+"Puebla":[
+"Puebla",
+"Tehuacán",
+"Atlixco",
+"Cholula"
+],
+
+"Querétaro":[
+"Querétaro",
+"San Juan del Río",
+"Tequisquiapan",
+"Bernal"
+],
+
+"Quintana Roo":[
+"Chetumal",
+"Cancún",
+"Playa del Carmen",
+"Tulum",
+"Isla Mujeres"
+],
+
+"San Luis Potosí":[
+"San Luis Potosí",
+"Ciudad Valles",
+"Matehuala",
+"Rioverde"
+],
+
+"Sinaloa":[
+"Culiacán",
+"Mazatlán",
+"Los Mochis",
+"Guasave"
+],
+
+"Sonora":[
+"Hermosillo",
+"Ciudad Obregón",
+"Nogales",
+"San Luis Río Colorado",
+"Puerto Peñasco"
+],
+
+"Tabasco":[
+"Villahermosa",
+"Comalcalco",
+"Paraíso"
+],
+
+"Tamaulipas":[
+"Ciudad Victoria",
+"Reynosa",
+"Matamoros",
+"Tampico",
+"Nuevo Laredo"
+],
+
+"Tlaxcala":[
+"Tlaxcala",
+"Apizaco",
+"Huamantla"
+],
+
+"Veracruz":[
+"Veracruz",
+"Xalapa",
+"Coatzacoalcos",
+"Orizaba",
+"Córdoba",
+"Poza Rica"
+],
+
+"Yucatán":[
+"Mérida",
+"Valladolid",
+"Progreso",
+"Tizimín"
+],
+
+"Zacatecas":[
+"Zacatecas",
+"Fresnillo",
+"Jerez",
+"Guadalupe"
+]
+
+};
+
+
+/* =====================================================
+HOTELES
+===================================================== */
+
+const hoteles={
+
+"Guadalajara":[
+["Hotel Morales",850],
+["Hotel Portonovo Plaza Expo",950],
+["Hotel Fenix",1000]
+],
+
+"Puerto Vallarta":[
+["Hotel Encino",900],
+["Hotel Eloisa",1000],
+["Hotel Tropicana",1000]
+],
+
+"Ciudad de México":[
+["Hotel Astor",950],
+["Hotel Mallorca",1000],
+["Hotel Roosevelt",1000]
+],
+
+"Monterrey":[
+["Hotel Monterrey Macroplaza",1000],
+["Hotel Misión Monterrey",950],
+["Hotel Fundador",900]
+],
+
+"Puebla":[
+["Hotel Central",850],
+["Hotel Santiago",950],
+["Hotel Isabel",1000]
+],
+
+"Querétaro":[
+["Hotel Hidalgo",900],
+["Hotel Mirabel",950],
+["Hotel Amberes",1000]
+],
+
+"Oaxaca de Juárez":[
+["Hotel Trebol",950],
+["Hotel Nacional",900],
+["Hotel Cazomalli",1000]
+],
+
+"Mérida":[
+["Hotel Reforma",850],
+["Hotel Doralba Inn",950],
+["Hotel Casa del Balam",1000]
+]
+
+};
+
+
+/* =====================================================
+RESTAURANTES
+===================================================== */
+
+const alimentos={
+
+"Guadalajara":{
+
+desayuno:[
+["La Chata","Mexicana"],
+["Café Madrid","Desayunos"],
+["Piggy Back","Café"]
+],
+
+comida:[
+["Karne Garibaldi","Mexicana"],
+["Las Famosas","Mexicana"],
+["La Tequila","Mexicana"]
+],
+
+cena:[
+["Santo Coyote","Mexicana"],
+["Alcalde","Contemporánea"],
+["Casa Bariachi","Mexicana"]
+]
+
+},
+
+"Puerto Vallarta":{
+
+desayuno:[
+["Café San Angel","Desayunos"],
+["Fredy's Toucan","Desayunos"],
+["The Pancake House","Desayunos"]
+],
+
+comida:[
+["El Barracuda","Mariscos"],
+["La Palapa","Mariscos"],
+["Joe Jack's Fish Shack","Mariscos"]
+],
+
+cena:[
+["Café des Artistes","Internacional"],
+["Barcelona Tapas","Tapas"],
+["La Leche","Contemporánea"]
+]
+
+},
+
+"Ciudad de México":{
+
+desayuno:[
+["Café El Cordobés","Desayunos"],
+["Café Ruta de la Seda","Café"],
+["La Onda","Desayunos"]
+],
+
+comida:[
+["El Cardenal","Mexicana"],
+["Los Cocuyos","Mexicana"],
+["Contramar","Mariscos"]
+],
+
+cena:[
+["Pujol","Mexicana contemporánea"],
+["Azul Histórico","Mexicana"],
+["Quintonil","Mexicana contemporánea"]
+]
+
+},
+
+"Monterrey":{
+
+desayuno:[
+["Panem","Café"],
+["Bread","Panadería"],
+["El Gran Invernadero","Desayunos"]
+],
+
+comida:[
+["El Rey del Cabrito","Mexicana"],
+["La Nacional","Mexicana"],
+["Cara de Vaca","Contemporánea"]
+],
+
+cena:[
+["Koli Cocina de Origen","Contemporánea"],
+["Pangea","Contemporánea"],
+["La Nacional","Mexicana"]
+]
+
+}
+
+};
+
+
+/* =====================================================
+BASE DE CASETAS
+=====================================================
+
+Los valores son referencias de rutas específicas.
+Si una ruta no está en la base, ViatiMex no inventará
+un precio y mandará a verificarla en SICT.
+*/
+
+const rutasCasetas={
+
+/* Guadalajara - Puerto Vallarta */
+
+"Guadalajara|Puerto Vallarta":{
+casetas:[
+["La Joya","$0"],
+["El Arenal","$0"],
+["Tepic","$0"]
+],
+total:0
+},
+
+/* Guadalajara - Tepic */
+
+"Guadalajara|Tepic":{
+casetas:[
+["El Arenal",193],
+["Plan de Barrancas",250]
+],
+total:443
+},
+
+/* Ciudad de México - Puebla */
+
+"Ciudad de México|Puebla":{
+casetas:[
+["San Marcos",226]
+],
+total:226
+},
+
+/* Ciudad de México - Querétaro */
+
+"Ciudad de México|Querétaro":{
+casetas:[
+["Tepotzotlán",226]
+],
+total:226
+},
+
+/* Querétaro - Irapuato */
+
+"Querétaro|Irapuato":{
+casetas:[
+["Querétaro",108],
+["Salamanca",105]
+],
+total:213
+},
+
+/* Monterrey - Saltillo */
+
+"Monterrey|Saltillo":{
+casetas:[
+["Ojo Caliente",160]
+],
+total:160
+}
+
+};
+
+
+/* =====================================================
+LLENAR ESTADOS
+===================================================== */
+
+function fillStates(){
+
+const selects=[
+
+document.getElementById("hotelState"),
+document.getElementById("foodState"),
+document.getElementById("originState"),
+document.getElementById("destinationState")
+
+];
+
+selects.forEach(select=>{
+
+Object.keys(mexico)
+.sort()
+.forEach(state=>{
+
+const option=
+document.createElement("option");
+
+option.value=state;
+option.textContent=state;
+
+select.appendChild(option);
+
+});
+
+});
+
+}
+
+
+/* =====================================================
+CARGAR CIUDADES
+===================================================== */
+
+function loadCities(stateId,cityId){
+
+const state=
+document.getElementById(stateId).value;
+
+const city=
+document.getElementById(cityId);
+
+city.innerHTML=
+'<option value="">Selecciona una ciudad</option>';
+
+if(!state){
+
+city.innerHTML=
+'<option value="">Primero selecciona un estado</option>';
+
+return;
+
+}
+
+mexico[state].forEach(item=>{
+
+const option=
+document.createElement("option");
+
+option.value=item;
+option.textContent=item;
+
+city.appendChild(option);
+
+});
+
+}
+
+
+/* =====================================================
+EVENTOS
+===================================================== */
+
+document
+.getElementById("hotelState")
+.addEventListener("change",function(){
+
+loadCities(
+"hotelState",
+"hotelCity"
+);
+
+});
+
+
+document
+.getElementById("foodState")
+.addEventListener("change",function(){
+
+loadCities(
+"foodState",
+"foodCity"
+);
+
+});
+
+
+document
+.getElementById("originState")
+.addEventListener("change",function(){
+
+loadCities(
+"originState",
+"originCity"
+);
+
+});
+
+
+document
+.getElementById("destinationState")
+.addEventListener("change",function(){
+
+loadCities(
+"destinationState",
+"destinationCity"
+);
+
+});
+
+
+/* =====================================================
+HOTELES
+===================================================== */
+
+function searchHotels(){
+
+const city=
+document.getElementById("hotelCity").value;
+
+const budget=
+Number(
+document.getElementById("budget").value
+);
+
+const container=
+document.getElementById("hotelResults");
+
+if(!city){
+
+container.innerHTML=`
+
+<div
+class="card empty"
+style="grid-column:1/-1;"
+>
+Selecciona primero estado y ciudad.
+</div>
+
+`;
+
+return;
+
+}
+
+const data=
+hoteles[city] || [
+
+["Hotel recomendado 1",900],
+["Hotel recomendado 2",950],
+["Hotel recomendado 3",1000]
+
+];
+
+const filtered=
+data.filter(h=>h[1]<=budget);
+
+if(!filtered.length){
+
+container.innerHTML=`
+
+<div
+class="card empty"
+style="grid-column:1/-1;"
+>
+No hay opciones dentro de ese presupuesto.
+</div>
+
+`;
+
+return;
+
+}
+
+container.innerHTML=
+filtered.map(h=>`
+
+<div class="card hotel-card">
+
+<div class="hotel-image">
+🏨
+</div>
+
+<h3>${h[0]}</h3>
+
+<p class="muted">
+${city}
+</p>
+
+<p class="price">
+$${h[1].toLocaleString("es-MX")}
+MXN / noche
+</p>
+
+<button
+class="btn-google"
+onclick="searchGoogle('${h[0]} ${city}')"
+>
+🔎 Ver en Google
+</button>
+
+</div>
+
+`).join("");
+
+}
+
+
+/* =====================================================
+ALIMENTOS
+===================================================== */
+
+function showFood(type,button){
+
+document
+.querySelectorAll(".tab")
+.forEach(t=>t.classList.remove("active"));
+
+button.classList.add("active");
+
+document
+.querySelectorAll(".food-content")
+.forEach(c=>c.classList.remove("active"));
+
+document
+.getElementById(type)
+.classList.add("active");
+
+renderFood(type);
+
+}
+
+
+function renderFood(type){
+
+const city=
+document.getElementById("foodCity").value;
+
+const container=
+document.getElementById(type);
+
+if(!city){
+
+container.innerHTML=
+'<div class="empty">Selecciona primero una ciudad.</div>';
+
+return;
+
+}
+
+const data=
+alimentos[city]?.[type] || [
+
+["Restaurante recomendado 1","Consultar"],
+["Restaurante recomendado 2","Consultar"],
+["Restaurante recomendado 3","Consultar"]
+
+];
+
+container.innerHTML=`
+
+<div class="grid">
+
+${data.map(r=>`
+
+<div class="card restaurant-card">
+
+<div class="restaurant-image">
+🍽️
+</div>
+
+<h3>
+${r[0]}
+</h3>
+
+<p class="muted">
+${r[1]} · ${city}
+</p>
+
+<button
+class="btn-google"
+onclick="searchGoogle('${r[0]} ${city}')"
+>
+🔎 Ver ubicación
+</button>
+
+</div>
+
+`).join("")}
+
+</div>
+
+`;
+
+}
+
+
+document
+.getElementById("foodCity")
+.addEventListener("change",function(){
+
+renderFood("desayuno");
+renderFood("comida");
+renderFood("cena");
+
+});
+
+
+/* =====================================================
+GOOGLE
+===================================================== */
+
+function searchGoogle(text){
+
+window.open(
+"https://www.google.com/search?q="+
+encodeURIComponent(text),
+"_blank"
+);
+
+}
+
+
+/* =====================================================
+GOOGLE MAPS
+===================================================== */
+
+function openGoogleMaps(){
+
+const os=
+document.getElementById("originState").value;
+
+const oc=
+document.getElementById("originCity").value;
+
+const ds=
+document.getElementById("destinationState").value;
+
+const dc=
+document.getElementById("destinationCity").value;
+
+if(!os||!oc||!ds||!dc){
+
+alert(
+"Selecciona origen y destino."
+);
+
+return;
+
+}
+
+const origin=
+oc+", "+os+", México";
+
+const destination=
+dc+", "+ds+", México";
+
+const url=
+"https://www.google.com/maps/dir/?api=1"+
+"&origin="+encodeURIComponent(origin)+
+"&destination="+encodeURIComponent(destination)+
+"&travelmode=driving";
+
+window.open(url,"_blank");
+
+}
+
+
+/* =====================================================
+SICT
+===================================================== */
+
+function openSICT(){
+
+window.open(
+"https://app.sct.gob.mx/sibuac_internet/ControllerUI?action=cmdEscogeRutaMovil",
+"_blank"
+);
+
+}
+
+
+/* =====================================================
+CALCULAR VIÁTICOS
+===================================================== */
+
+async function calculateTrip(){
+
+const os=
+document.getElementById("originState").value;
+
+const oc=
+document.getElementById("originCity").value;
+
+const ds=
+document.getElementById("destinationState").value;
+
+const dc=
+document.getElementById("destinationCity").value;
+
+const performance=
+Number(
+document.getElementById("performance").value
+);
+
+const fuelPrice=
+Number(
+document.getElementById("fuelPrice").value
+);
+
+const trip=
+document.getElementById("trip").value;
+
+if(!os||!oc||!ds||!dc){
+
+alert(
+"Selecciona el estado y ciudad de origen y destino."
+);
+
+return;
+
+}
+
+if(performance<=0||fuelPrice<=0){
+
+alert(
+"Revisa el precio del combustible y rendimiento."
+);
+
+return;
+
+}
+
+
+const origin=
+oc+", "+os+", México";
+
+const destination=
+dc+", "+ds+", México";
+
+
+const button=
+document.querySelector(
+"#viaticos .btn-primary"
+);
+
+button.disabled=true;
+
+button.textContent=
+"Calculando...";
+
+
+try{
+
+const distance=
+await estimateDistance(
+origin,
+destination
+);
+
+
+const multiplier=
+trip==="round"?2:1;
+
+
+const totalKm=
+distance*multiplier;
+
+
+const liters=
+totalKm/performance;
+
+
+const fuelCost=
+liters*fuelPrice;
+
+
+/* CASETAS */
+
+const tollData=
+getTolls(oc,dc);
+
+
+let tollCost=0;
+
+
+if(tollData){
+
+tollCost=
+tollData.total*multiplier;
+
+}
+
+
+/* TOTAL */
+
+const total=
+fuelCost+tollCost;
+
+
+/* RESULTADOS */
+
+document
+.getElementById("results")
+.classList.add("show");
+
+
+document
+.getElementById("resultKm")
+.textContent=
+totalKm.toFixed(1)+" km";
+
+
+document
+.getElementById("resultFuel")
+.textContent=
+money(fuelCost);
+
+
+document
+.getElementById("resultTolls")
+.textContent=
+tollData
+? money(tollCost)
+: "Consultar";
+
+
+document
+.getElementById("resultTotal")
+.textContent=
+tollData
+? money(total)
+: money(fuelCost);
+
+
+/* DESGLOSE */
+
+document
+.getElementById("breakFuel")
+.textContent=
+money(fuelCost);
+
+
+document
+.getElementById("breakTolls")
+.textContent=
+tollData
+? money(tollCost)
+: "Consultar SICT";
+
+
+document
+.getElementById("breakTotal")
+.textContent=
+tollData
+? money(total)
+: money(fuelCost);
+
+
+/* TOTAL */
+
+document
+.getElementById("totalFuel")
+.textContent=
+money(fuelCost);
+
+
+document
+.getElementById("totalTolls")
+.textContent=
+tollData
+? money(tollCost)
+: "Consultar SICT";
+
+
+document
+.getElementById("grandTotal")
+.textContent=
+tollData
+? money(total)
+: money(fuelCost);
+
+
+/* RESUMEN */
+
+document
+.getElementById("routeSummary")
+.innerHTML=`
+
+<p>
+<strong>📍 Origen:</strong>
+${origin}
+</p>
+
+<p>
+<strong>🏁 Destino:</strong>
+${destination}
+</p>
+
+<p>
+<strong>📏 Distancia:</strong>
+${totalKm.toFixed(1)} km
+</p>
+
+<p>
+<strong>⛽ Litros estimados:</strong>
+${liters.toFixed(2)} L
+</p>
+
+<p>
+<strong>⛽ Combustible:</strong>
+${money(fuelCost)}
+</p>
+
+<p>
+<strong>🚧 Casetas:</strong>
+${
+tollData
+? money(tollCost)
+: "Consultar SICT"
+}
+</p>
+
+<p>
+<strong>💰 Total:</strong>
+${
+tollData
+? money(total)
+: money(fuelCost)+" + casetas"
+}
+</p>
+
+`;
+
+
+/* LISTA DE CASETAS */
+
+renderTolls(
+tollData,
+multiplier
+);
+
+}
+catch(error){
+
+console.error(error);
+
+alert(
+"No fue posible calcular la distancia. "+
+"Intenta nuevamente o revisa la ruta en Google Maps."
+);
+
+}
+
+button.disabled=false;
+
+button.textContent=
+"💰 Calcular viáticos";
+
+}
+
+
+/* =====================================================
+OBTENER CASETAS
+===================================================== */
+
+function getTolls(origin,destination){
+
+let key=
+origin+"|"+destination;
+
+let reverse=
+destination+"|"+origin;
+
+
+if(rutasCasetas[key]){
+return rutasCasetas[key];
+}
+
+if(rutasCasetas[reverse]){
+return rutasCasetas[reverse];
+}
+
+return null;
+
+}
+
+
+/* =====================================================
+MOSTRAR CASETAS
+===================================================== */
+
+function renderTolls(data,multiplier){
+
+const container=
+document.getElementById("tollList");
+
+
+if(!data){
+
+container.innerHTML=`
+
+<div class="warning">
+
+No tenemos una tarifa integrada para esta
+ruta.
+
+Abre la calculadora oficial SICT para consultar
+el número y precio de las casetas.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+container.innerHTML=
+data.casetas.map(c=>`
+
+<div class="toll-item">
+
+<div>
+
+<strong>
+🚧 ${c[0]}
+</strong>
+
+</div>
+
+<strong>
+${
+typeof c[1]==="number"
+? money(c[1]*multiplier)
+: c[1]
+}
+</strong>
+
+</div>
+
+`).join("");
+
+
+if(multiplier===2){
+
+container.innerHTML+=`
+
+<div
+style="
+margin-top:15px;
+font-weight:bold;
+color:#0f766e;
+"
+>
+🔄 Los precios mostrados corresponden
+a ida y vuelta.
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =====================================================
+DISTANCIA
+===================================================== */
+
+async function estimateDistance(
+origin,
+destination
+){
+
+try{
+
+const a=
+await geocode(origin);
+
+const b=
+await geocode(destination);
+
+
+const url=
+"https://router.project-osrm.org/route/v1/driving/"+
+a.lon+","+a.lat+";"+
+b.lon+","+b.lat+
+"?overview=false";
+
+
+const response=
+await fetch(url);
+
+
+if(!response.ok){
+
+throw new Error(
+"No se pudo obtener la ruta"
+);
+
+}
+
+
+const data=
+await response.json();
+
+
+if(
+!data.routes ||
+!data.routes.length
+){
+
+throw new Error(
+"Ruta no encontrada"
+);
+
+}
+
+
+return data.routes[0].distance/1000;
+
+}
+catch(error){
+
+/* RUTAS DE RESPALDO */
+
+const fallback={
+
+"Guadalajara|Puerto Vallarta":295,
+
+"Guadalajara|Tepic":200,
+
+"Guadalajara|Ciudad de México":550,
+
+"Guadalajara|Guanajuato":280,
+
+"Ciudad de México|Puebla":135,
+
+"Ciudad de México|Querétaro":220,
+
+"Monterrey|Saltillo":90,
+
+"Querétaro|Irapuato":170
+
+};
+
+
+const o=
+origin.split(",")[0];
+
+const d=
+destination.split(",")[0];
+
+
+const key=
+o+"|"+d;
+
+const reverse=
+d+"|"+o;
+
+
+if(fallback[key])
+return fallback[key];
+
+if(fallback[reverse])
+return fallback[reverse];
+
+
+throw error;
+
+}
+
+}
+
+
+/* =====================================================
+GEOCODIFICAR
+===================================================== */
+
+async function geocode(place){
+
+const url=
+"https://nominatim.openstreetmap.org/search"+
+"?format=json"+
+"&limit=1"+
+"&countrycodes=mx"+
+"&q="+
+encodeURIComponent(place);
+
+
+const response=
+await fetch(url);
+
+
+if(!response.ok){
+
+throw new Error(
+"No se pudo localizar la ciudad."
+);
+
+}
+
+
+const data=
+await response.json();
+
+
+if(!data.length){
+
+throw new Error(
+"Ciudad no encontrada."
+);
+
+}
+
+
+return{
+
+lat:Number(data[0].lat),
+
+lon:Number(data[0].lon)
+
+};
+
+}
+
+
+/* =====================================================
+PRECIO COMBUSTIBLE
+===================================================== */
+
+document
+.getElementById("fuel")
+.addEventListener("change",function(){
+
+const price=
+document.getElementById("fuelPrice");
+
+
+if(this.value==="regular")
+price.value="23.68";
+
+
+if(this.value==="premium")
+price.value="28.57";
+
+
+if(this.value==="diesel")
+price.value="27.00";
+
+});
+
+
+/* =====================================================
+FORMATO DINERO
+===================================================== */
+
+function money(value){
+
+return value.toLocaleString(
+"es-MX",
+{
+style:"currency",
+currency:"MXN"
+}
+);
+
+}
+
+
+/* =====================================================
+INICIAR
+===================================================== */
+
+fillStates();
+
+renderFood("desayuno");
+
+</script>
+
+</body>
+</html>
